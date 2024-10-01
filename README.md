@@ -1,6 +1,7 @@
-# Architecture Diagram
+# Dataflow Diagram
 
-![Architecture Diagram](image.png)
+![image](https://github.com/user-attachments/assets/79bfc022-f88f-4879-bbe1-8f9d65b5db8d)
+
 
 
 # Sequence of execution
