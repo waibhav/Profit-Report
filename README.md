@@ -1,41 +1,68 @@
-# Dataflow Diagram
+# Comprehensive E-commerce Data Pipeline
+
+This project is a data engineering pipeline that processes e-commerce data, transforming it from raw files into aggregated reports. The pipeline follows a bronze-silver-gold data warehousing architecture, implemented using a series of Databricks notebooks.
+
+## Dataflow Diagram
 
 ![image](https://github.com/user-attachments/assets/79bfc022-f88f-4879-bbe1-8f9d65b5db8d)
 
+## Project Structure
 
+The project is organized into several notebooks, each responsible for a specific stage of the data pipeline:
 
-# Sequence of execution
+- **`Assignment - utilities.ipynb`**: Contains helper functions for common tasks such as renaming columns, adding columns, and saving data to tables. This notebook is used by other notebooks in the project.
+- **`Assignment - Ingestion.ipynb`**: Ingests raw data from various sources (CSV, XLSX, JSON) into the bronze layer of the data warehouse.
+- **`Assignment - Enrichment.ipynb`**: Cleans, transforms, and enriches the data from the bronze layer, preparing it for the silver layer.
+- **`Assignment - Aggregation.ipynb`**: Aggregates the enriched data from the silver layer to create business-level reports, which are stored in the gold layer.
+- **`Assignment - Tests.ipynb`**: Contains a suite of tests to validate the data at each stage of the pipeline, ensuring data quality and the integrity of the transformations.
 
-1. Assignment - Ingestion.ipynb
-2. Assignment - Enrichment.ipynb
-3. Assignment - Aggregation.ipynb
+## Data Pipeline Architecture
 
-# Other notebooks
+The pipeline is designed using a bronze-silver-gold data warehousing architecture, which is a common pattern for organizing data in a data lake or data warehouse.
 
-1. Assignment - utilities.ipynb (imported by other notebooks for execution)
-2. Assignment - Tests.ipynb (Unit test cases)
+### Bronze Layer (Raw Data)
 
-# Steps
+The bronze layer stores the raw, unprocessed data ingested from the source systems. In this project, the `Assignment - Ingestion.ipynb` notebook is responsible for ingesting the following files into the bronze layer:
+- `Product.csv`
+- `Customer.xlsx`
+- `Order.json`
 
-1. Data is first loaded in Data Lake (AWS S3)
-2. Assignment - Ingestion (Databricks notebook) pulls data from Data Lake and loads in bronze layer of lakehouse.
-3. Assignment - Enrichment (Databricks notebook) pulls data from bronze layer, processes them and stores in silver layer. This notebook also joins orders data with Customer and Product before saving those to Orders silver layer.
-4. Assignment - Aggregation (Databricks notebook) aggregates data from orders enriched table w.r.t. the report dimensions, i.e. customer_name, year, category and sub_category to measure profit against them.
-5. SQL queries used for creating reports have been saved in aggregation notebook, but this can be seggregated for a production project.
+### Silver Layer (Enriched Data)
 
-# Assumptions
+The silver layer contains cleaned, transformed, and enriched data that is ready for analysis. The `Assignment - Enrichment.ipynb` notebook performs several transformations to create the silver layer, including:
+- Cleaning and formatting customer names.
+- Rounding off profit values to two decimal places.
+- Joining data from different sources to create a more comprehensive dataset.
 
-- Cluster has this library installed to read excel files. com.crealytics:spark-excel_2.12:0.13.5
-- year of profit is marked by order date and not ship date
+### Gold Layer (Aggregated Data)
 
+The gold layer contains aggregated data that is ready for business intelligence and reporting. The `Assignment - Aggregation.ipynb` notebook creates the gold layer by aggregating the enriched data to generate the following reports:
+- Profit by Year
+- Profit by Year and Product Category
+- Profit by Customer
+- Profit by Customer and Year
 
-# Enhancements
+## How to Run the Pipeline
 
-- Handle schema changes
-- Parameterize filenames
-- For Data quality checks, may be Great Expectations library can be used.
-- Utilities file was created as part of refactoring the code, it's necessary to create test cases for utilities file as well.
-- Product Table can be partitioned on 'category'.
-- Customer table can be partitioned on 'segment'
-- Orders table can be partitioned on 'order_date' 
-- depending on frequency, volume and nature (full/ incremental), cdc should be implemented.
+To run the pipeline, execute the notebooks in the following order:
+
+1. **`Assignment - Ingestion.ipynb`**: To ingest the raw data.
+2. **`Assignment - Enrichment.ipynb`**: To clean and enrich the data.
+3. **`Assignment - Aggregation.ipynb`**: To aggregate the data and generate reports.
+
+## How to Run the Tests
+
+To ensure the data quality and the correctness of the pipeline, run the `Assignment - Tests.ipynb` notebook. This notebook contains a series of tests that validate the data at each stage of the pipeline. The tests include:
+- Schema validation
+- Record count validation
+- Data quality checks (e.g., ensuring profit is rounded correctly)
+- Validation of aggregations
+
+## Reports
+
+The `Assignment - Aggregation.ipynb` notebook generates the following reports, which are stored in the `presentation` database (gold layer):
+
+- **Profit by Year**: Total profit for each year.
+- **Profit by Year and Product Category**: Total profit for each product category, broken down by year.
+- **Profit by Customer**: Total profit for each customer.
+- **Profit by Customer and Year**: Total profit for each customer, broken down by year.
